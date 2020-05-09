@@ -17,7 +17,7 @@ jobs:
       - name: Download BuildTools
         run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
       - name: Prepare Git
-        run: git config --global --unset core.autocrlf
+        run: git config --unset core.autocrlf
       - name: Run BuildTools
         run: cd BuildTools && java -jar BuildTools.jar && cd ..
       - name: Publish Spigot
