@@ -12,12 +12,12 @@ jobs:
     name: Build CraftBukkit and Spigot
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - run: git config core.autocrlf false
       - name: Create directory for output from BuildTools
         run: mkdir BuildTools
       - name: Download BuildTools
         run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
-      - name: Prepare Git
-        run: git config --unset core.autocrlf
       - name: Run BuildTools
         run: cd BuildTools && java -jar BuildTools.jar && cd ..
       - name: Publish Spigot
