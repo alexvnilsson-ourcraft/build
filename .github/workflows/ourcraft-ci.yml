@@ -15,7 +15,7 @@ jobs:
       - name: Create directory for output from BuildTools
         runs: mkdir BuildTools
       - name: Download BuildTools
-        run: curl -H "Accept: application/zip" https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
+        run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
       - name: Prepare Git
         run: git config --global --unset core.autocrlf
       - name: Run BuildTools
