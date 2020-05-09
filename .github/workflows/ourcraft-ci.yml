@@ -1,0 +1,21 @@
+name: OurCraft CI
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build CraftBukkit and Spigot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create directory for output from BuildTools
+        runs: mkdir BuildTools
+      - name: Download BuildTools
+        run: curl -H "Accept: application/zip" https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
+      - name: Prepare Git
+        run: git config --global --unset core.autocrlf
+      - name: Run BuildTools
+        run: cd BuildTools && java -jar BuildTools.jar && cd ..
+      - name: Publish Spigot
+        uses: actions/upload-artifact@v2
+        with:
+          name: spigot.jar
+          path: BuildTools/spigot-[0-9.]+.jar
