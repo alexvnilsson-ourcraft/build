@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build CraftBukkit and Spigot
+    name: Build Spigot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,8 +20,15 @@ jobs:
         run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
       - name: Run BuildTools
         run: cd BuildTools && java -jar BuildTools.jar && cd ..
+      - name: Determine version
+        run: bin/spigot-version.py && source spigot.version
+      - name: Prepare artifact for publishing
+        run: bin/prepare-artifact.py
+        env:
+          CRAFTBUKKIT_BUILD_PATH: BuildTools/
+          CRAFTBUKKIT_OUTPUT_PATH: Dist/
       - name: Publish Spigot
         uses: actions/upload-artifact@v2
         with:
           name: spigot.jar
-          path: BuildTools/spigot-[0-9.]+.jar
+          path: Dist/spigot.jar
