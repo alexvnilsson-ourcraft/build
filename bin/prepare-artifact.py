@@ -10,8 +10,8 @@ import shutil
 artifact_build_path = Path.cwd().joinpath(
     os.getenv('SPIGOT_BUILD_PATH', 'BuildTools'))
 artifact_output_path = Path.cwd().joinpath(
-    os.getenv('SPIGOT_OUTPUT_PATH', 'Dist'))
-artifact_output_name = os.getenv('SPIGOT_OUTPUT_NAME', 'spigot.jar')
+    os.getenv('SPIGOT_BUILD_OUTPUT_PATH', 'Dist'))
+artifact_output_name = os.getenv('SPIGOT_BUILD_OUTPUT_NAME', 'craftbukkit')
 
 if artifact_build_path.is_absolute == False:
     artifact_build_path = Path.cwd().joinpath(artifact_build_path)
@@ -20,10 +20,11 @@ print(
     f"Build: {artifact_build_path}, Output: [Path: {artifact_output_path}, Name: {artifact_output_name}]"
 )
 
-spigot_artifacts = artifact.find_all(artifact_build_path)
+spigot_artifacts = artifact.find_all(artifact_build_path,
+                                     f"{artifact_output_name}-*.jar")
 
 if spigot_artifacts is None:
-    print(f"Found no spigot-[...].jar file.")
+    print(f"Found no {artifact_output_name}-[...].jar file.")
     exit(1)
 
 if not isinstance(spigot_artifacts, list):
@@ -46,5 +47,12 @@ except:
     print(f"Failed to make directory {artifact_output_path}")
     exit(1)
 
-shutil.copyfile(spigot_artifact_latest,
-                artifact_output_path.joinpath('spigot.jar'))
+output_exec_path = artifact_output_path.joinpath(f"{artifact_output_name}.jar")
+
+try:
+    shutil.copyfile(spigot_artifact_latest, output_exec_path)
+except:
+    print(f"Failed to copy executable to {artifact_output_path}")
+    exit(1)
+
+print(f"Copied executable to {output_exec_path}")

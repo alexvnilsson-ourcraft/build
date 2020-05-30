@@ -10,7 +10,7 @@ from distutils.version import StrictVersion
 
 # Consts
 artifact_name_pattern = re.compile(
-    '(spigot-)([0-9]+\.[0-9]+(?:\.[0-9]+)?)(.jar)', re.IGNORECASE)
+    '([\w]+-)([0-9]+\.[0-9]+(?:\.[0-9]+)?)(.jar)', re.IGNORECASE)
 
 
 def find_all(dir=None, glob_match='spigot-*.jar', verbose=False):

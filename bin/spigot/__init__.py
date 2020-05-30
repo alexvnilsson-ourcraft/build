@@ -8,9 +8,7 @@ from pathlib import PurePath, Path
 import json
 
 
-def find_spigot_jar(dir=None,
-                    build_dir='BuildTools',
-                    glob_match='spigot-*.jar'):
+def find_spigot_jar(dir=None, glob_match='spigot-*.jar'):
     if dir is None:
         dir = Path.cwd().joinpath(build_dir)
 

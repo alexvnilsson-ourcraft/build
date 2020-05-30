@@ -8,7 +8,7 @@ on:
       master
 
 env:
-  SPIGOT_OUTPUT_NAME: craftbukkit
+  SPIGOT_BUILD_OUTPUT_NAME: craftbukkit
   SPIGOT_BUILD_REV: latest
 
 jobs:
@@ -17,15 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SPIGOT_BUILD_PATH: BuildTools
-      SPIGOT_OUTPUT_PATH: Dist
+      SPIGOT_BUILD_OUTPUT_PATH: Dist
     steps:
       - uses: actions/checkout@v2
-      - name: Prepare environment
-        run: bin/prepare-env
-      - name: Prepare workdir
-        run: bin/prepare-workdir.py
-      - name: Download BuildTools
-        run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > $SPIGOT_BUILD_PATH/BuildTools.jar
+      - name: Prepare for work
+        run: bin/prepare-env && bin/prepare-work
       - name: Run BuildTools
         run: bin/build
       - name: Determine version
@@ -35,10 +31,10 @@ jobs:
       - name: Publish Spigot
         uses: actions/upload-artifact@v2
         with:
-          name: $SPIGOT_OUTPUT_NAME.jar
-          path: Dist/$SPIGOT_OUTPUT_NAME.jar
+          name: $SPIGOT_BUILD_OUTPUT_NAME.jar
+          path: Dist/$SPIGOT_BUILD_OUTPUT_NAME.jar
       - name: Clean-up leftovers
-        run: rm -rf $SPIGOT_BUILD_PATH/ && rm -rf $SPIGOT_OUTPUT_PATH/
+        run: rm -rf $SPIGOT_BUILD_PATH/ && rm -rf $SPIGOT_BUILD_OUTPUT_PATH/
   publish:
     name: Publish to Docker repository
     runs-on: ubuntu-latest
@@ -47,6 +43,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: $SPIGOT_OUTPUT_NAME.jar
-          path: docker-image/path/$SPIGOT_OUTPUT_NAME.jar
+          name: $SPIGOT_BUILD_OUTPUT_NAME.jar
+          path: docker-image/path/$SPIGOT_BUILD_OUTPUT_NAME.jar
     

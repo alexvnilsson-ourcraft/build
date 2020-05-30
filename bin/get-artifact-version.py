@@ -5,11 +5,12 @@ import os
 import spigot
 from pathlib import Path
 
-artifact_output_name = os.getenv('SPIGOT_OUTPUT_NAME', 'craftbukkit')
+artifact_output_name = os.getenv('SPIGOT_BUILD_OUTPUT_NAME', 'craftbukkit')
 artifact_build_path = Path.cwd().joinpath(
     os.getenv('SPIGOT_BUILD_PATH', 'BuildTools'))
 
-spigot_jar = spigot.find_spigot_jar()
+spigot_jar = spigot.find_spigot_jar(artifact_build_path,
+                                    f"{artifact_output_name}-*.jar")
 
 if spigot_jar is None:
     print(f"Found no {artifact_output_name}-[...].jar file.")
