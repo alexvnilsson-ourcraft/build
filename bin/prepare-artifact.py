@@ -6,24 +6,18 @@ from spigot import artifact
 from pathlib import Path
 import shutil
 
-# Default const
-default_artifact_build_path = 'BuildTools'
-default_artifact_output_path = 'Dist'
-default_artifact_output_name = 'spigot.jar'
-
 # Environment vars
 artifact_build_path = Path.cwd().joinpath(
-    os.getenv('CRAFTBUKKIT_BUILD_PATH', default_artifact_build_path))
+    os.getenv('SPIGOT_BUILD_PATH', 'BuildTools'))
 artifact_output_path = Path.cwd().joinpath(
-    os.getenv('CRAFTBUKKIT_OUTPUT_PATH', default_artifact_output_path))
-artifact_output_name = os.getenv('CRAFTBUKKIT_OUTPUT_NAME',
-                                 default_artifact_output_name)
+    os.getenv('SPIGOT_OUTPUT_PATH', 'Dist'))
+artifact_output_name = os.getenv('SPIGOT_OUTPUT_NAME', 'spigot.jar')
 
 if artifact_build_path.is_absolute == False:
     artifact_build_path = Path.cwd().joinpath(artifact_build_path)
 
 print(
-    f"Build: {artifact_build_path}, Output: [Path: {artifact_output_path}, Name: {default_artifact_output_name}]"
+    f"Build: {artifact_build_path}, Output: [Path: {artifact_output_path}, Name: {artifact_output_name}]"
 )
 
 spigot_artifacts = artifact.find_all(artifact_build_path)
@@ -51,16 +45,6 @@ try:
 except:
     print(f"Failed to make directory {artifact_output_path}")
     exit(1)
-
-if artifact_output_path.joinpath(artifact_output_name).exists():
-    old_artifact = artifact_output_path.joinpath(artifact_output_name)
-    print(f"Clean up old artifacts", end='')
-    try:
-        os.remove(old_artifact)
-        print(" OK")
-    except:
-        print(" FAIL")
-        exit(1)
 
 shutil.copyfile(spigot_artifact_latest,
                 artifact_output_path.joinpath('spigot.jar'))

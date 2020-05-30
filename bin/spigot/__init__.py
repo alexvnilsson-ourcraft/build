@@ -5,6 +5,7 @@ import zipfile
 from glob import glob
 import json
 from pathlib import PurePath, Path
+import json
 
 
 def find_spigot_jar(dir=None,
@@ -41,7 +42,7 @@ def get_spigot_version(spigot_filename,
             return version["name"]
 
 
-def print_spigot_version(version=None, spigot_filename=None):
+def dump_spigot_manifest(version=None, spigot_filename=None):
     if version is None and spigot_filename is None:
         raise Exception(
             "Neither version nor a filename to a JAR-archive was supplied, cannot proceed."
@@ -50,5 +51,8 @@ def print_spigot_version(version=None, spigot_filename=None):
     if version is None:
         version = get_spigot_version(spigot_filename)
 
-    with open('spigot.version', 'w') as version_file:
-        version_file.write(f"SPIGOT_VERSION=version")
+    manifest_path = Path.cwd().joinpath('Dist').joinpath('spigot.json')
+    manifest_filename = manifest_path.relative_to(Path.cwd())
+
+    with open(str(manifest_filename), 'w') as version_file:
+        version_file.write(json.dumps({'version': version}))

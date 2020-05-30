@@ -7,28 +7,46 @@ on:
     branches:
       master
 
+env:
+  SPIGOT_OUTPUT_NAME: craftbukkit
+  SPIGOT_BUILD_REV: latest
+
 jobs:
   build:
-    name: Build Spigot
+    name: Build Spigot and compile CraftBukkit
     runs-on: ubuntu-latest
+    env:
+      SPIGOT_BUILD_PATH: BuildTools
+      SPIGOT_OUTPUT_PATH: Dist
     steps:
       - uses: actions/checkout@v2
-      - run: git config core.autocrlf false
-      - name: Create directory for output from BuildTools
-        run: mkdir BuildTools
+      - name: Prepare environment
+        run: bin/prepare-env
+      - name: Prepare workdir
+        run: bin/prepare-workdir.py
       - name: Download BuildTools
-        run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > BuildTools/BuildTools.jar
+        run: curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar > $SPIGOT_BUILD_PATH/BuildTools.jar
       - name: Run BuildTools
-        run: cd BuildTools && java -jar BuildTools.jar && cd ..
+        run: bin/build
       - name: Determine version
-        run: bin/spigot-version.py && source spigot.version
+        run: bin/get-artifact-version.py
       - name: Prepare artifact for publishing
         run: bin/prepare-artifact.py
-        env:
-          CRAFTBUKKIT_BUILD_PATH: BuildTools/
-          CRAFTBUKKIT_OUTPUT_PATH: Dist/
       - name: Publish Spigot
         uses: actions/upload-artifact@v2
         with:
-          name: spigot.jar
-          path: Dist/spigot.jar
+          name: $SPIGOT_OUTPUT_NAME.jar
+          path: Dist/$SPIGOT_OUTPUT_NAME.jar
+      - name: Clean-up leftovers
+        run: rm -rf $SPIGOT_BUILD_PATH/ && rm -rf $SPIGOT_OUTPUT_PATH/
+  publish:
+    name: Publish to Docker repository
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: $SPIGOT_OUTPUT_NAME.jar
+          path: docker-image/path/$SPIGOT_OUTPUT_NAME.jar
+    
