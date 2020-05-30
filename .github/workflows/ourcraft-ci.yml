@@ -31,8 +31,8 @@ jobs:
       - name: Publish Spigot
         uses: actions/upload-artifact@v2
         with:
-          name: $SPIGOT_BUILD_OUTPUT_NAME.jar
-          path: Dist/$SPIGOT_BUILD_OUTPUT_NAME.jar
+          name: craftbukkit.jar
+          path: Dist/craftbukkit.jar
       - name: Clean-up leftovers
         run: rm -rf $SPIGOT_BUILD_PATH/ && rm -rf $SPIGOT_BUILD_OUTPUT_PATH/
   publish:
