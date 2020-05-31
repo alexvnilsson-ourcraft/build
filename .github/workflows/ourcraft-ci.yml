@@ -8,12 +8,12 @@ on:
       master
 
 env:
-  SPIGOT_BUILD_OUTPUT_NAME: craftbukkit
+  SPIGOT_BUILD_TYPE: spigot
   SPIGOT_BUILD_REV: latest
 
 jobs:
   build:
-    name: Build Spigot and compile CraftBukkit
+    name: Build Spigot
     runs-on: ubuntu-latest
     env:
       SPIGOT_BUILD_PATH: BuildTools
@@ -21,18 +21,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Prepare for work
-        run: bin/prepare-env && bin/prepare-work
+        run: spigot-build-tools/prepare-env && spigot-build-tools/prepare-work
       - name: Run BuildTools
-        run: bin/build
+        run: spigot-build-tools/build
       - name: Determine version
-        run: bin/get-artifact-version.py
+        run: spigot-build-tools/get-artifact-version.py
       - name: Prepare artifact for publishing
-        run: bin/prepare-artifact.py
+        run: spigot-build-tools/prepare-artifact.py
       - name: Publish Spigot
         uses: actions/upload-artifact@v2
         with:
-          name: craftbukkit.jar
-          path: Dist/craftbukkit.jar
+          name: spigot.jar
+          path: Dist/spigot.jar
       - name: Clean-up leftovers
         run: rm -rf $SPIGOT_BUILD_PATH/ && rm -rf $SPIGOT_BUILD_OUTPUT_PATH/
   publish:
@@ -43,6 +43,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: craftbukkit.jar
-          path: docker-image/path/craftbukkit.jar
+          name: spigot.jar
+          path: docker-image/path/spigot.jar
     
