@@ -20,6 +20,7 @@ jobs:
       SPIGOT_BUILD_OUTPUT_PATH: Dist
     steps:
       - uses: actions/checkout@v2
+      - uses: git submodule init && git submodule update
       - name: Prepare for work
         run: spigot-build-tools/prepare-env && spigot-build-tools/prepare-work
       - name: Run BuildTools
