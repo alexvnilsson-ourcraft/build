@@ -1,0 +1,3 @@
+[submodule "spigot-build-tools"]
+	path = spigot-build-tools
+	url = git@github.com:alexvnilsson/spigot-build-tools.git
